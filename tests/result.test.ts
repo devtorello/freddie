@@ -1,6 +1,6 @@
 import { describe, it } from 'jsr:@std/testing/bdd';
 import { expect } from 'jsr:@std/expect';
-import { isOk, isError, success, failure } from '../result.ts';
+import { isOk, isError, success, failure } from '../src/result.ts';
 
 describe('result', () => {
   describe('success', () => {

@@ -1,4 +1,4 @@
-import { Result, success, failure } from '../result.ts';
+import { Result, success, failure } from './result.ts';
 
 type CreateFolderResult = Result<boolean, 'FOLDER_ALREADY_EXISTS' | 'UNEXPECTED_ERROR'>;
 

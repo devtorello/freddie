@@ -1,7 +1,7 @@
-import { describe, it, beforeAll } from 'jsr:@std/testing/bdd';
+import { describe, it } from 'jsr:@std/testing/bdd';
 import { createFile, checkFileExistence, makeFileExecutable } from '../src/file.ts';
 import { expect } from 'jsr:@std/expect';
-import { isError, isOk } from '../result.ts';
+import { isError, isOk } from '../src/result.ts';
 
 describe('file', () => {
   describe('check file existence', () => {

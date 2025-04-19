@@ -1,4 +1,4 @@
-import { failure, isError, Result, success } from '../result.ts';
+import { failure, isError, Result, success } from './result.ts';
 
 interface CreateFileOptions {
   overwrite?: boolean;

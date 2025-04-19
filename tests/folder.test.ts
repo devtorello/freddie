@@ -1,7 +1,7 @@
 import { describe, it } from 'jsr:@std/testing/bdd';
 import { expect } from 'jsr:@std/expect';
 import { createFolder, removeFolder } from '../src/folder.ts';
-import { isError, isOk } from '../result.ts';
+import { isError, isOk } from '../src/result.ts';
 
 describe('folder', () => {describe('create folder', () => {
     it('should return true if the folder is created', async () => {
