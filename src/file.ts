@@ -1,4 +1,4 @@
-import { failure, isError, Result, success } from './result.ts';
+import { failure, isError, Result, success } from '../result.ts';
 
 interface CreateFileOptions {
   overwrite?: boolean;
@@ -8,7 +8,7 @@ export const checkFileExistence = async (path: string): Promise<boolean> => {
   try {
     await Deno.stat(path);
     return true;
-  } catch (error) {
+  } catch {
     return false;
   }
 };
@@ -19,7 +19,7 @@ export const makeFileExecutable = async (
   try {
     await Deno.chmod(path, 0o755);
     return success(true);
-  } catch (error) {
+  } catch {
     return failure('UNEXPECTED_ERROR');
   }
 };
@@ -45,7 +45,7 @@ export const createFile = async (
     }
 
     return success(true);
-  } catch (error) {
+  } catch {
     return failure('UNEXPECTED_ERROR');
   }
 };

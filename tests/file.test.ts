@@ -1,5 +1,5 @@
 import { describe, it, beforeAll } from 'jsr:@std/testing/bdd';
-import { createFile, checkFileExistence, makeFileExecutable } from '../file.ts';
+import { createFile, checkFileExistence, makeFileExecutable } from '../src/file.ts';
 import { expect } from 'jsr:@std/expect';
 import { isError, isOk } from '../result.ts';
 

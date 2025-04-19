@@ -1,6 +1,6 @@
 import { describe, it } from 'jsr:@std/testing/bdd';
 import { expect } from 'jsr:@std/expect';
-import { createFolder, removeFolder } from '../folder.ts';
+import { createFolder, removeFolder } from '../src/folder.ts';
 import { isError, isOk } from '../result.ts';
 
 describe('folder', () => {describe('create folder', () => {

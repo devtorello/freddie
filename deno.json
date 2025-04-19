@@ -20,7 +20,11 @@
     "singleQuote": true
   },
   "lint": {
-    "include": ["src"],
+    "include": [
+      "src",
+      "tests",
+      "cli.ts"
+    ],
     "rules": {
       "tags": ["recommended"],
       "include": [
