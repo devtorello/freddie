@@ -1,11 +1,16 @@
 {
   "name": "@freddie/woof",
   "version": "0.0.1",
+  "exports": {
+    ".": "./cli.ts"
+  },
   "tasks": {
-    "dev": "deno run --watch main.ts",
-    "start": "deno run main.ts",
+    "dev": "deno run --watch cli.ts",
+    "start": "deno run cli.ts",
     "lint": "deno lint",
-    "fmt": "deno fmt"
+    "fmt": "deno fmt",
+    "test": "deno test",
+    "test:dev": "deno test --watch"
   },
   "fmt": {
     "useTabs": true,
@@ -29,5 +34,9 @@
         "no-useless-rename"
       ]
     }
+  },
+  "imports": {
+    "@std/flags": "jsr:@std/flags@^0.224.0",
+    "@std/io": "jsr:@std/io@^0.225.2"
   }
 }
