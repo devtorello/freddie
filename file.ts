@@ -1,4 +1,4 @@
-import { failure, Result, success } from './result.ts';
+import { failure, isError, Result, success } from './result.ts';
 
 export const checkFileExistence = async (path: string): Promise<boolean> => {
   try {
@@ -8,6 +8,18 @@ export const checkFileExistence = async (path: string): Promise<boolean> => {
     return false;
   }
 };
+
+export const makeFileExecutable = async (
+  path: string,
+): Promise<Result<boolean, 'UNEXPECTED_ERROR'>> => {
+  try {
+    await Deno.chmod(path, 0o755);
+    return success(true);
+  } catch (error) {
+    return failure('UNEXPECTED_ERROR');
+  }
+};
+
 
 export const createFile = async (
   path: string,
@@ -19,17 +31,14 @@ export const createFile = async (
       return failure('FILE_ALREADY_EXISTS');
     }
     await Deno.writeFile(path, new TextEncoder().encode(content));
-    return success(true);
-  } catch (error) {
-    return failure('UNEXPECTED_ERROR');
-  }
-};
 
-export const makeFileExecutable = async (
-  path: string,
-): Promise<Result<boolean, 'UNEXPECTED_ERROR'>> => {
-  try {
-    await Deno.chmod(path, 0o755);
+    const makeExecutableResult = await makeFileExecutable(path);
+    if (isError(makeExecutableResult)) {
+      if (makeExecutableResult.error === 'UNEXPECTED_ERROR') {
+        return failure('UNEXPECTED_ERROR');
+      }
+    }
+
     return success(true);
   } catch (error) {
     return failure('UNEXPECTED_ERROR');
