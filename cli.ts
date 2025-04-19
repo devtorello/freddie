@@ -1,79 +1,96 @@
 import { createFile } from './src/file.ts';
 import { createFolder, removeFolder } from './src/folder.ts';
 import { isError } from './src/result.ts';
-import { DEFAULT_PRE_COMMIT_CONTENT, FREDDIE_FOLDER, GIT_FOLDER, PROXY_HOOK_CONTENT } from './src/consts.ts';
+import {
+	DEFAULT_PRE_COMMIT_CONTENT,
+	FREDDIE_FOLDER,
+	GIT_FOLDER,
+	PROXY_HOOK_CONTENT,
+} from './src/consts.ts';
 
 const [flag] = Deno.args;
 
 const ensureFolder = async (): Promise<void> => {
-  const folderResult = await createFolder(FREDDIE_FOLDER);
-  if (isError(folderResult)) {
-    if (folderResult.error === 'UNEXPECTED_ERROR') {
-      Deno.stdout.write(new TextEncoder().encode('Failed to create folder\n'));
-      Deno.exit(1);
-    }
+	const folderResult = await createFolder(FREDDIE_FOLDER);
+	if (isError(folderResult)) {
+		if (folderResult.error === 'UNEXPECTED_ERROR') {
+			Deno.stdout.write(new TextEncoder().encode('Failed to create folder\n'));
+			Deno.exit(1);
+		}
 
-    const answer = prompt('Ops, it seems that the folder already exists. Do you want me to reset your folder? Give me the "yes" command in order to proceed:');
-    if (answer !== 'yes') {
-      Deno.stdout.write(new TextEncoder().encode('Aborting\n'));
-      Deno.exit(0);
-    }
+		const answer = prompt(
+			'Ops, it seems that the folder already exists. Do you want me to reset your folder? Give me the "yes" command in order to proceed:',
+		);
+		if (answer !== 'yes') {
+			Deno.stdout.write(new TextEncoder().encode('Aborting\n'));
+			Deno.exit(0);
+		}
 
-    const removeResult = await removeFolder(FREDDIE_FOLDER);
-    if (isError(removeResult)) {
-      if (removeResult.error === 'UNEXPECTED_ERROR') {
-        Deno.stdout.write(new TextEncoder().encode('Failed to reset folder\n'));
-        Deno.exit(1);
-      }
-    }
+		const removeResult = await removeFolder(FREDDIE_FOLDER);
+		if (isError(removeResult)) {
+			if (removeResult.error === 'UNEXPECTED_ERROR') {
+				Deno.stdout.write(new TextEncoder().encode('Failed to reset folder\n'));
+				Deno.exit(1);
+			}
+		}
 
-    await ensureFolder();
-  }
-}
+		await ensureFolder();
+	}
+};
 
 const ensureInitSampleHook = async (overwrite = false): Promise<void> => {
-  const freddieHookCreation = await createFile(
-    `${FREDDIE_FOLDER}/pre-commit`,
-    DEFAULT_PRE_COMMIT_CONTENT,
-    { overwrite }
-  );
-  
-  if (isError(freddieHookCreation)) {
-    if (freddieHookCreation.error === 'UNEXPECTED_ERROR') {
-      Deno.stdout.write(new TextEncoder().encode('Failed to create freddie hook file\n'));
-      Deno.exit(1);
-    }
+	const freddieHookCreation = await createFile(
+		`${FREDDIE_FOLDER}/pre-commit`,
+		DEFAULT_PRE_COMMIT_CONTENT,
+		{ overwrite },
+	);
 
-    const answer = prompt('Ops, it seems that the freddie hook file already exists. Do I have permission to overwrite it? Give me the "yes" command in order to proceed:');
-    if (answer !== 'yes') {
-      Deno.stdout.write(new TextEncoder().encode('Aborting\n'));
-      Deno.exit(0);
-    }
+	if (isError(freddieHookCreation)) {
+		if (freddieHookCreation.error === 'UNEXPECTED_ERROR') {
+			Deno.stdout.write(
+				new TextEncoder().encode('Failed to create freddie hook file\n'),
+			);
+			Deno.exit(1);
+		}
 
-    await ensureInitSampleHook(true);
-  }
+		const answer = prompt(
+			'Ops, it seems that the freddie hook file already exists. Do I have permission to overwrite it? Give me the "yes" command in order to proceed:',
+		);
+		if (answer !== 'yes') {
+			Deno.stdout.write(new TextEncoder().encode('Aborting\n'));
+			Deno.exit(0);
+		}
 
-  const gitHookCreation = await createFile(
-    `${GIT_FOLDER}/pre-commit`,
-    PROXY_HOOK_CONTENT['pre-commit'],
-    { overwrite }
-  );
-  
-  if (isError(gitHookCreation)) {
-    if (gitHookCreation.error === 'UNEXPECTED_ERROR') {
-      Deno.stdout.write(new TextEncoder().encode('Failed to create git hook file\n'));
-      Deno.exit(1);
-    }
-  }
-}
+		await ensureInitSampleHook(true);
+	}
+
+	const gitHookCreation = await createFile(
+		`${GIT_FOLDER}/pre-commit`,
+		PROXY_HOOK_CONTENT['pre-commit'],
+		{ overwrite },
+	);
+
+	if (isError(gitHookCreation)) {
+		if (gitHookCreation.error === 'UNEXPECTED_ERROR') {
+			Deno.stdout.write(
+				new TextEncoder().encode('Failed to create git hook file\n'),
+			);
+			Deno.exit(1);
+		}
+	}
+};
 
 switch (flag) {
-  case "init": {
-    await ensureFolder();
-    await ensureInitSampleHook();
-    Deno.stdout.write(new TextEncoder().encode('Your hooks have been successfully initialized.\n'));
-    break;
-  }
-  default:
-    Deno.stdout.write(new TextEncoder().encode('unknown flag\n'));
+	case 'init': {
+		await ensureFolder();
+		await ensureInitSampleHook();
+		Deno.stdout.write(
+			new TextEncoder().encode(
+				'Your hooks have been successfully initialized.\n',
+			),
+		);
+		break;
+	}
+	default:
+		Deno.stdout.write(new TextEncoder().encode('unknown flag\n'));
 }

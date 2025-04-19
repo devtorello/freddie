@@ -14,8 +14,8 @@ exit 0
 `;
 
 export const PROXY_HOOK_CONTENT = {
-  'pre-commit': `#!/bin/sh
+	'pre-commit': `#!/bin/sh
   # proxy pre-commit hook for @freddie/woof
   exec ./.freddie/pre-commit "$@"
-  `
+  `,
 };
