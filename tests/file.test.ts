@@ -28,6 +28,15 @@ describe('file', () => {
       await Deno.remove('./create-file-test');
     });
 
+    it('should not return false and FILE_ALREADY_EXISTS if overwrite is true', async () => {
+      const result = await createFile('./create-file-test', 'content', { overwrite: true });
+      expect(result.ok).toBeTruthy();
+      if (isOk(result)) {
+        expect(result.value).toBe(true);
+      }
+      await Deno.remove('./create-file-test');
+    });
+
     it('should return false and UNEXPECTED_ERROR if the file is not created', async () => {
       const result = await createFile('/path/to/does/not/exist', 'content');
       expect(result.ok).toBeFalsy();

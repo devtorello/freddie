@@ -1,5 +1,9 @@
 import { failure, isError, Result, success } from './result.ts';
 
+interface CreateFileOptions {
+  overwrite?: boolean;
+}
+
 export const checkFileExistence = async (path: string): Promise<boolean> => {
   try {
     await Deno.stat(path);
@@ -24,10 +28,11 @@ export const makeFileExecutable = async (
 export const createFile = async (
   path: string,
   content: string,
+  options: CreateFileOptions = { overwrite: false }
 ): Promise<Result<boolean, 'FILE_ALREADY_EXISTS' | 'UNEXPECTED_ERROR'>> => {
   try {
     const fileExists = await checkFileExistence(path);
-    if (fileExists) {
+    if (fileExists && !options.overwrite) {
       return failure('FILE_ALREADY_EXISTS');
     }
     await Deno.writeFile(path, new TextEncoder().encode(content));
