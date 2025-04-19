@@ -7,6 +7,7 @@ import {
 	GIT_FOLDER,
 	PROXY_HOOK_CONTENT,
 } from './src/consts.ts';
+import { stderr, stdout } from './src/helpers.ts';
 
 const [flag] = Deno.args;
 
@@ -14,7 +15,7 @@ const ensureFolder = async (): Promise<void> => {
 	const folderResult = await createFolder(FREDDIE_FOLDER);
 	if (isError(folderResult)) {
 		if (folderResult.error === 'UNEXPECTED_ERROR') {
-			Deno.stdout.write(new TextEncoder().encode('Failed to create folder\n'));
+			await stderr('Failed to create folder.');
 			Deno.exit(1);
 		}
 
@@ -22,14 +23,14 @@ const ensureFolder = async (): Promise<void> => {
 			'Ops, it seems that the folder already exists. Do you want me to reset your folder? Give me the "yes" command in order to proceed:',
 		);
 		if (answer !== 'yes') {
-			Deno.stdout.write(new TextEncoder().encode('Aborting\n'));
+			await stdout('Aborting.');
 			Deno.exit(0);
 		}
 
 		const removeResult = await removeFolder(FREDDIE_FOLDER);
 		if (isError(removeResult)) {
 			if (removeResult.error === 'UNEXPECTED_ERROR') {
-				Deno.stdout.write(new TextEncoder().encode('Failed to reset folder\n'));
+				await stderr('Failed to reset folder.');
 				Deno.exit(1);
 			}
 		}
@@ -47,9 +48,7 @@ const ensureInitSampleHook = async (overwrite = false): Promise<void> => {
 
 	if (isError(freddieHookCreation)) {
 		if (freddieHookCreation.error === 'UNEXPECTED_ERROR') {
-			Deno.stdout.write(
-				new TextEncoder().encode('Failed to create freddie hook file\n'),
-			);
+			await stderr('Failed to create freddie hook file.');
 			Deno.exit(1);
 		}
 
@@ -57,7 +56,7 @@ const ensureInitSampleHook = async (overwrite = false): Promise<void> => {
 			'Ops, it seems that the freddie hook file already exists. Do I have permission to overwrite it? Give me the "yes" command in order to proceed:',
 		);
 		if (answer !== 'yes') {
-			Deno.stdout.write(new TextEncoder().encode('Aborting\n'));
+			await stdout('Aborting.');
 			Deno.exit(0);
 		}
 
@@ -72,9 +71,7 @@ const ensureInitSampleHook = async (overwrite = false): Promise<void> => {
 
 	if (isError(gitHookCreation)) {
 		if (gitHookCreation.error === 'UNEXPECTED_ERROR') {
-			Deno.stdout.write(
-				new TextEncoder().encode('Failed to create git hook file\n'),
-			);
+			await stderr('Failed to create git hook file.');
 			Deno.exit(1);
 		}
 	}
@@ -84,13 +81,10 @@ switch (flag) {
 	case 'init': {
 		await ensureFolder();
 		await ensureInitSampleHook();
-		Deno.stdout.write(
-			new TextEncoder().encode(
-				'Your hooks have been successfully initialized.\n',
-			),
-		);
+		await stdout('Your hooks have been successfully initialized.');
 		break;
 	}
 	default:
-		Deno.stdout.write(new TextEncoder().encode('unknown flag\n'));
+		await stderr('Unknown flag.');
+		Deno.exit(1);
 }
