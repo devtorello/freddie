@@ -39,7 +39,7 @@ const ensureFolder = async (): Promise<void> => {
 	}
 };
 
-const ensureInitSampleHook = async (overwrite = false): Promise<void> => {
+const ensureWelcomeSampleHook = async (overwrite = false): Promise<void> => {
 	const freddieHookCreation = await createFile(
 		`${FREDDIE_FOLDER}/pre-commit`,
 		DEFAULT_PRE_COMMIT_CONTENT,
@@ -60,7 +60,7 @@ const ensureInitSampleHook = async (overwrite = false): Promise<void> => {
 			Deno.exit(0);
 		}
 
-		await ensureInitSampleHook(true);
+		await ensureWelcomeSampleHook(true);
 	}
 
 	const gitHookCreation = await createFile(
@@ -78,9 +78,9 @@ const ensureInitSampleHook = async (overwrite = false): Promise<void> => {
 };
 
 switch (flag) {
-	case 'init': {
+	case 'welcome': {
 		await ensureFolder();
-		await ensureInitSampleHook();
+		await ensureWelcomeSampleHook();
 		await stdout('Your hooks have been successfully initialized.');
 		break;
 	}
