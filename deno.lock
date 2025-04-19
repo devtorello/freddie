@@ -4,11 +4,15 @@
     "jsr:@std/assert@0.224": "0.224.0",
     "jsr:@std/assert@^1.0.12": "1.0.12",
     "jsr:@std/bytes@^1.0.5": "1.0.5",
+    "jsr:@std/data-structures@^1.0.6": "1.0.6",
     "jsr:@std/expect@*": "1.0.15",
     "jsr:@std/flags@0.224": "0.224.0",
+    "jsr:@std/fs@^1.0.16": "1.0.16",
     "jsr:@std/internal@^1.0.6": "1.0.6",
     "jsr:@std/io@~0.225.2": "0.225.2",
-    "jsr:@std/testing@*": "1.0.11"
+    "jsr:@std/path@^1.0.8": "1.0.8",
+    "jsr:@std/testing@*": "1.0.11",
+    "jsr:@std/testing@^1.0.11": "1.0.11"
   },
   "jsr": {
     "@std/assert@0.224.0": {
@@ -23,6 +27,9 @@
     "@std/bytes@1.0.5": {
       "integrity": "4465dd739d7963d964c809202ebea6d5c6b8e3829ef25c6a224290fbb8a1021e"
     },
+    "@std/data-structures@1.0.6": {
+      "integrity": "76a7fd8080c66604c0496220a791860492ab21a04a63a969c0b9a0609bbbb760"
+    },
     "@std/expect@1.0.15": {
       "integrity": "eca360007b5a7f13dbfa1294224baee7fb98dcd460d8461fe64eeae302902945",
       "dependencies": [
@@ -36,6 +43,12 @@
         "jsr:@std/assert@0.224"
       ]
     },
+    "@std/fs@1.0.16": {
+      "integrity": "81878f62b6eeda0bf546197fc3daa5327c132fee1273f6113f940784a468b036",
+      "dependencies": [
+        "jsr:@std/path"
+      ]
+    },
     "@std/internal@1.0.6": {
       "integrity": "9533b128f230f73bd209408bb07a4b12f8d4255ab2a4d22a1fd6d87304aca9a4"
     },
@@ -45,18 +58,25 @@
         "jsr:@std/bytes"
       ]
     },
+    "@std/path@1.0.8": {
+      "integrity": "548fa456bb6a04d3c1a1e7477986b6cffbce95102d0bb447c67c4ee70e0364be"
+    },
     "@std/testing@1.0.11": {
       "integrity": "12b3db12d34f0f385a26248933bde766c0f8c5ad8b6ab34d4d38f528ab852f48",
       "dependencies": [
         "jsr:@std/assert@^1.0.12",
-        "jsr:@std/internal"
+        "jsr:@std/data-structures",
+        "jsr:@std/fs",
+        "jsr:@std/internal",
+        "jsr:@std/path"
       ]
     }
   },
   "workspace": {
     "dependencies": [
       "jsr:@std/flags@0.224",
-      "jsr:@std/io@~0.225.2"
+      "jsr:@std/io@~0.225.2",
+      "jsr:@std/testing@^1.0.11"
     ]
   }
 }
