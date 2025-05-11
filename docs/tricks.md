@@ -35,7 +35,7 @@ These commands let you add, remove, and manage hooks like a true pack leader.
 - Removes the hook from .freddie/ and deletes its proxy from .git/hooks/.
 - Asks for confirmation before removal — safety first!
 
-### ⌛ List All Managed Hooks
+### ✅ List All Managed Hooks
 
 - Command: `freddie sniff`
 - Shows all hooks Freddie is currently managing.

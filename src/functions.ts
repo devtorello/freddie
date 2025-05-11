@@ -3,6 +3,7 @@ import {
 	createFolder,
 	defaultExistentFolderPrompt,
 	folderExists,
+	listFolderFiles,
 	removeFolder,
 } from './folder.ts';
 import { isError } from './result.ts';
@@ -144,4 +145,14 @@ export const destroyProxyHook = async (hookName: string): Promise<void> => {
 	}
 
 	await stdout('Your hook has been successfully removed.');
+};
+
+export const listHooks = async () => {
+	const hooks = await listFolderFiles(FREDDIE_FOLDER);
+	if (hooks.length === 0) {
+		await stdout('No hooks found.');
+		return;
+	}
+	await stdout('Your hooks:');
+	await stdout(hooks.map((hook) => `\t- ${hook}`).join('\n'));
 };

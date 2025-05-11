@@ -42,6 +42,19 @@ export const removeFolder = async (
 	}
 };
 
+export const listFolderFiles = async (path: string): Promise<string[]> => {
+	try {
+		const files = Deno.readDir(path);
+		const fileNames: string[] = [];
+		for await (const file of files) {
+			fileNames.push(file.name);
+		}
+		return fileNames;
+	} catch {
+		return [];
+	}
+};
+
 export const defaultExistentFolderPrompt = async () => {
 	const answer = prompt(
 		'Ops, it seems that the folder already exists. Do you want me to reset your folder? Give me the "yes" command in order to proceed:',

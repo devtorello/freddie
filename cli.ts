@@ -4,6 +4,7 @@ import {
 	destroyProxyHook,
 	ensureFreddieFolder,
 	ensureWelcomeSampleHook,
+	listHooks,
 } from './src/functions.ts';
 
 const [flag] = Deno.args;
@@ -37,6 +38,10 @@ switch (flag) {
 
 		await destroyProxyHook(hookName);
 		await stdout('Your hook has been successfully removed.');
+		break;
+	}
+	case 'sniff': {
+		await listHooks();
 		break;
 	}
 	default:
