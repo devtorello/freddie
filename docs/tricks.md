@@ -63,11 +63,11 @@ These commands control his energy levels. ⚡
 - Command: `freddie check`
 - Lists all hooks along with their current state: enabled or disabled.
 
-## ⌛ Uninstall
+## ✅ Uninstall
 
 Need to clean the yard? Freddie can pack up and leave with a simple command. 💨
 
-### ⌛ Uninstall Freddie
+### ✅ Uninstall Freddie
 
 - Command: `freddie bye`
 - Removes Freddie's personal doghouse and all hooks managed by him.

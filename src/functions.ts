@@ -214,9 +214,6 @@ export const switchHookState = async (
 			await stderr(error);
 			Deno.exit(1);
 		}
-
-		await stdout('Your hook has been disabled.');
-		return;
 	}
 
 	const renameResult = await renameFile(
@@ -234,7 +231,29 @@ export const switchHookState = async (
 		await stderr(error);
 		Deno.exit(1);
 	}
+};
 
-	await stdout('Your hook has been enabled.');
-	return;
+export const uninstallFreddieHooks = async (): Promise<void> => {
+	const removeResult = await removeFolder(FREDDIE_FOLDER);
+	if (isError(removeResult)) {
+		if (removeResult.error === 'UNEXPECTED_ERROR') {
+			await stderr('Failed to uninstall Freddie hooks.');
+			Deno.exit(1);
+		}
+	}
+
+	const gitHooks = await listFolderFiles(GIT_FOLDER);
+	const gitHooksToRemove = gitHooks
+		.filter((hook) => !hook.endsWith('.sample'))
+		.map((hook) => removeFile(`${GIT_FOLDER}/${hook}`));
+
+	const results = await Promise.all(gitHooksToRemove);
+	const errors = results.filter((r) => !r.ok);
+
+	if (errors.length > 0) {
+		await stderr(
+			'Failed to uninstall Freddie hooks completely, some hooks might still be there.',
+		);
+		Deno.exit(1);
+	}
 };

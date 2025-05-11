@@ -7,6 +7,7 @@ import {
 	listHooks,
 	showHookContent,
 	switchHookState,
+	uninstallFreddieHooks,
 } from './src/functions.ts';
 
 const [flag] = Deno.args;
@@ -46,12 +47,19 @@ switch (flag) {
 		const hookName = Deno.args[1];
 		await defaultHookNameCheck(hookName);
 		await switchHookState(hookName, true);
+		await stdout('Your hook has been successfully disabled.');
 		break;
 	}
 	case 'wake': {
 		const hookName = Deno.args[1];
 		await defaultHookNameCheck(hookName);
 		await switchHookState(hookName, false);
+		await stdout('Your hook has been successfully enabled.');
+		break;
+	}
+	case 'bye': {
+		await uninstallFreddieHooks();
+		await stdout('Your Freddie hooks have been successfully uninstalled.');
 		break;
 	}
 	default:
