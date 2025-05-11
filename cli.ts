@@ -1,6 +1,7 @@
 import { stderr, stdout } from './src/helpers.ts';
 import {
 	createProxyHook,
+	destroyProxyHook,
 	ensureFreddieFolder,
 	ensureWelcomeSampleHook,
 } from './src/functions.ts';
@@ -24,6 +25,18 @@ switch (flag) {
 
 		await createProxyHook(hookName);
 		await stdout('Your hook has been successfully added.');
+		break;
+	}
+	case 'destroy': {
+		const hookName = Deno.args[1];
+
+		if (!hookName) {
+			await stderr('Please, provide a hook name.');
+			Deno.exit(1);
+		}
+
+		await destroyProxyHook(hookName);
+		await stdout('Your hook has been successfully removed.');
 		break;
 	}
 	default:

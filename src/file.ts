@@ -1,5 +1,10 @@
 import { failure, isError, Result, success } from './result.ts';
 
+type FileErrors =
+	| 'FILE_ALREADY_EXISTS'
+	| 'FILE_DOES_NOT_EXIST'
+	| 'UNEXPECTED_ERROR';
+
 interface CreateFileOptions {
 	overwrite?: boolean;
 }
@@ -46,5 +51,30 @@ export const createFile = async (
 		return success(true);
 	} catch {
 		return failure('UNEXPECTED_ERROR');
+	}
+};
+
+export const removeFile = async (
+	path: string,
+): Promise<Result<boolean, 'FILE_DOES_NOT_EXIST' | 'UNEXPECTED_ERROR'>> => {
+	try {
+		await Deno.remove(path);
+		return success(true);
+	} catch (e) {
+		if (e instanceof Deno.errors.NotFound) {
+			return failure('FILE_DOES_NOT_EXIST');
+		}
+		return failure('UNEXPECTED_ERROR');
+	}
+};
+
+export const fileErrorsMessageMapper = (error: FileErrors): string => {
+	switch (error) {
+		case 'FILE_ALREADY_EXISTS':
+			return 'File already exists.';
+		case 'FILE_DOES_NOT_EXIST':
+			return 'File does not exist.';
+		case 'UNEXPECTED_ERROR':
+			return 'An unexpected error occurred.';
 	}
 };

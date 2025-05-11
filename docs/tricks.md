@@ -23,7 +23,7 @@ can do it by running `freddie welcome`.
 
 These commands let you add, remove, and manage hooks like a true pack leader.
 
-### ⌛ Add a New Hook
+### ✅ Add a New Hook
 
 - Command: `freddie add <hook-name>`
 - Adds a new hook file in .freddie/ and sets up a proxy in .git/hooks/.

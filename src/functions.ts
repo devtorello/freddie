@@ -8,7 +8,7 @@ import {
 	stderr,
 	stdout,
 } from './helpers.ts';
-import { createFile } from './file.ts';
+import { createFile, fileErrorsMessageMapper, removeFile } from './file.ts';
 
 export const ensureFreddieFolder = async (): Promise<void> => {
 	const folderResult = await createFolder(FREDDIE_FOLDER);
@@ -115,4 +115,34 @@ export const createProxyHook = async (
 			Deno.exit(1);
 		}
 	}
+};
+
+export const destroyProxyHook = async (hookName: string): Promise<void> => {
+	if (!await folderExists(FREDDIE_FOLDER)) {
+		await stderr(
+			'Freddie folder does not exist. Please, run "freddie welcome" first!',
+		);
+		Deno.exit(1);
+	}
+
+	if (!VALID_GIT_HOOKS.has(hookName)) {
+		await stderr('Invalid hook name. Try again, please.');
+		Deno.exit(1);
+	}
+
+	const freddieHookRemoval = await removeFile(`${FREDDIE_FOLDER}/${hookName}`);
+	if (isError(freddieHookRemoval)) {
+		const error = fileErrorsMessageMapper(freddieHookRemoval.error);
+		await stderr(error);
+		Deno.exit(1);
+	}
+
+	const gitHookRemoval = await removeFile(`${GIT_FOLDER}/${hookName}`);
+	if (isError(gitHookRemoval)) {
+		const error = fileErrorsMessageMapper(gitHookRemoval.error);
+		await stderr(error);
+		Deno.exit(1);
+	}
+
+	await stdout('Your hook has been successfully removed.');
 };
