@@ -17,6 +17,20 @@ import {
 	stdout,
 } from './helpers.ts';
 import {
+	MSG_FREDDIE_FOLDER_MISSING,
+	MSG_INVALID_HOOK_NAME,
+	MSG_CREATE_FREDDIE_HOOK_FAIL,
+	MSG_CREATE_GIT_HOOK_FAIL,
+	MSG_ALREADY_SNOOZING,
+	MSG_ALREADY_RUNNING,
+	MSG_NO_HOOKS_FOUND,
+	MSG_HOOKS_HEADER,
+	MSG_SHOW_HOOK_CONTENT,
+	MSG_UNINSTALL_FAIL,
+	MSG_UNINSTALL_PARTIAL,
+} from './message.ts';
+
+import {
 	createFile,
 	fileErrorsMessageMapper,
 	removeFile,
@@ -28,7 +42,7 @@ export const ensureFreddieFolder = async (): Promise<void> => {
 	const folderResult = await createFolder(FREDDIE_FOLDER);
 	if (isError(folderResult)) {
 		if (folderResult.error === 'UNEXPECTED_ERROR') {
-			await stderr('Failed to create folder.');
+			await stderr(MSG_FREDDIE_FOLDER_MISSING);
 			Deno.exit(1);
 		}
 
@@ -37,7 +51,7 @@ export const ensureFreddieFolder = async (): Promise<void> => {
 		const removeResult = await removeFolder(FREDDIE_FOLDER);
 		if (isError(removeResult)) {
 			if (removeResult.error === 'UNEXPECTED_ERROR') {
-				await stderr('Failed to reset folder.');
+				await stderr(MSG_FREDDIE_FOLDER_MISSING);
 				Deno.exit(1);
 			}
 		}
@@ -57,7 +71,7 @@ export const ensureWelcomeSampleHook = async (
 
 	if (isError(freddieHookCreation)) {
 		if (freddieHookCreation.error === 'UNEXPECTED_ERROR') {
-			await stderr('Failed to create freddie hook file.');
+			await stderr(MSG_CREATE_FREDDIE_HOOK_FAIL);
 			Deno.exit(1);
 		}
 
@@ -73,7 +87,7 @@ export const ensureWelcomeSampleHook = async (
 
 	if (isError(gitHookCreation)) {
 		if (gitHookCreation.error === 'UNEXPECTED_ERROR') {
-			await stderr('Failed to create git hook file.');
+			await stderr(MSG_CREATE_GIT_HOOK_FAIL);
 			Deno.exit(1);
 		}
 	}
@@ -84,14 +98,12 @@ export const createProxyHook = async (
 	overwrite = false,
 ): Promise<void> => {
 	if (!await folderExists(FREDDIE_FOLDER)) {
-		await stderr(
-			'Freddie folder does not exist. Please, run "freddie welcome" first!',
-		);
+		await stderr(MSG_FREDDIE_FOLDER_MISSING);
 		Deno.exit(1);
 	}
 
 	if (!VALID_GIT_HOOKS.has(hookName)) {
-		await stderr('Invalid hook name. Try again, please.');
+		await stderr(MSG_INVALID_HOOK_NAME);
 		Deno.exit(1);
 	}
 
@@ -103,7 +115,7 @@ export const createProxyHook = async (
 
 	if (isError(freddieHookCreation)) {
 		if (freddieHookCreation.error === 'UNEXPECTED_ERROR') {
-			await stderr('Failed to create freddie hook file.');
+			await stderr(MSG_CREATE_FREDDIE_HOOK_FAIL);
 			Deno.exit(1);
 		}
 
@@ -119,7 +131,7 @@ export const createProxyHook = async (
 
 	if (isError(gitHookCreation)) {
 		if (gitHookCreation.error === 'UNEXPECTED_ERROR') {
-			await stderr('Failed to create git hook file.');
+			await stderr(MSG_CREATE_GIT_HOOK_FAIL);
 			Deno.exit(1);
 		}
 	}
@@ -127,14 +139,12 @@ export const createProxyHook = async (
 
 export const destroyProxyHook = async (hookName: string): Promise<void> => {
 	if (!await folderExists(FREDDIE_FOLDER)) {
-		await stderr(
-			'Freddie folder does not exist. Please, run "freddie welcome" first!',
-		);
+		await stderr(MSG_FREDDIE_FOLDER_MISSING);
 		Deno.exit(1);
 	}
 
 	if (!VALID_GIT_HOOKS.has(hookName)) {
-		await stderr('Invalid hook name. Try again, please.');
+		await stderr(MSG_INVALID_HOOK_NAME);
 		Deno.exit(1);
 	}
 
@@ -151,23 +161,21 @@ export const destroyProxyHook = async (hookName: string): Promise<void> => {
 		await stderr(error);
 		Deno.exit(1);
 	}
-
-	await stdout('Your hook has been successfully removed.');
 };
 
 export const listHooks = async () => {
 	const hooks = await listFolderFiles(FREDDIE_FOLDER);
 	if (hooks.length === 0) {
-		await stdout('No hooks found.');
+		await stdout(MSG_NO_HOOKS_FOUND);
 		return;
 	}
-	await stdout('Your hooks:');
+	await stdout(MSG_HOOKS_HEADER);
 	await stdout(hooks.map((hook) => `\t- ${hook}`).join('\n'));
 };
 
 export const showHookContent = async (hookName: string): Promise<void> => {
 	if (!VALID_GIT_HOOKS.has(hookName)) {
-		await stderr('Invalid hook name. Try again, please.');
+		await stderr(MSG_INVALID_HOOK_NAME);
 		Deno.exit(1);
 	}
 
@@ -178,7 +186,7 @@ export const showHookContent = async (hookName: string): Promise<void> => {
 		Deno.exit(1);
 	}
 
-	await stdout('Here is your hook content:');
+	await stdout(MSG_SHOW_HOOK_CONTENT);
 
 	const splitContent = hookContent.value.split('\n');
 	const formattedContent = splitContent.map((line) => {
@@ -194,7 +202,7 @@ export const switchHookState = async (
 	shouldDisable: boolean,
 ): Promise<void> => {
 	if (!VALID_GIT_HOOKS.has(hookName)) {
-		await stderr('Invalid hook name. Try again, please.');
+		await stderr(MSG_INVALID_HOOK_NAME);
 		Deno.exit(1);
 	}
 
@@ -206,7 +214,7 @@ export const switchHookState = async (
 
 		if (isError(renameResult)) {
 			if (renameResult.error === 'FILE_DOES_NOT_EXIST') {
-				await stderr('Hook does not exist or it is already disabled.');
+				await stderr(MSG_ALREADY_SNOOZING);
 				Deno.exit(1);
 			}
 
@@ -223,7 +231,7 @@ export const switchHookState = async (
 
 	if (isError(renameResult)) {
 		if (renameResult.error === 'FILE_DOES_NOT_EXIST') {
-			await stderr('Hook does not exist or it is already enabled.');
+			await stderr(MSG_ALREADY_RUNNING);
 			Deno.exit(1);
 		}
 
@@ -237,7 +245,7 @@ export const uninstallFreddieHooks = async (): Promise<void> => {
 	const removeResult = await removeFolder(FREDDIE_FOLDER);
 	if (isError(removeResult)) {
 		if (removeResult.error === 'UNEXPECTED_ERROR') {
-			await stderr('Failed to uninstall Freddie hooks.');
+			await stderr(MSG_UNINSTALL_FAIL);
 			Deno.exit(1);
 		}
 	}
@@ -251,9 +259,7 @@ export const uninstallFreddieHooks = async (): Promise<void> => {
 	const errors = results.filter((r) => !r.ok);
 
 	if (errors.length > 0) {
-		await stderr(
-			'Failed to uninstall Freddie hooks completely, some hooks might still be there.',
-		);
+		await stderr(MSG_UNINSTALL_PARTIAL);
 		Deno.exit(1);
 	}
 };

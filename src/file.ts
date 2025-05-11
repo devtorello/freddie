@@ -1,4 +1,5 @@
 import { failure, isError, Result, success } from './result.ts';
+import { formatItalic } from './helpers.ts';
 
 type FileErrors =
 	| 'FILE_ALREADY_EXISTS'
@@ -100,10 +101,10 @@ export const renameFile = async (
 export const fileErrorsMessageMapper = (error: FileErrors): string => {
 	switch (error) {
 		case 'FILE_ALREADY_EXISTS':
-			return 'File already exists.';
+			return `🐶 ${formatItalic('*Tilts head*')} This file already exists. Maybe fetch a new name?`;
 		case 'FILE_DOES_NOT_EXIST':
-			return 'File does not exist.';
+			return `🐶 ${formatItalic('*Sniffs*')} I can't find that file anywhere. Did it run off?`;
 		case 'UNEXPECTED_ERROR':
-			return 'An unexpected error occurred.';
+			return `🐶 ${formatItalic('*Whimpers*')} Something unexpected happened. Can you throw the stick again?`;
 	}
 };

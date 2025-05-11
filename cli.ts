@@ -9,6 +9,16 @@ import {
 	switchHookState,
 	uninstallFreddieHooks,
 } from './src/functions.ts';
+import {
+	MSG_ADD_HOOK,
+	MSG_DESTROY_HOOK,
+	MSG_SLEEP,
+	MSG_WELCOME,
+	MSG_DEFAULT,
+	MSG_BYE,
+	MSG_WAKE,
+	MSG_HELP,
+} from './src/message.ts';
 
 const [flag] = Deno.args;
 
@@ -16,21 +26,21 @@ switch (flag) {
 	case 'welcome': {
 		await ensureFreddieFolder();
 		await ensureWelcomeSampleHook();
-		await stdout('Your hooks have been successfully initialized.');
+		await stdout(MSG_WELCOME);
 		break;
 	}
 	case 'add': {
 		const hookName = Deno.args[1];
 		await defaultHookNameCheck(hookName);
 		await createProxyHook(hookName);
-		await stdout('Your hook has been successfully added.');
+		await stdout(MSG_ADD_HOOK);
 		break;
 	}
 	case 'destroy': {
 		const hookName = Deno.args[1];
 		await defaultHookNameCheck(hookName);
 		await destroyProxyHook(hookName);
-		await stdout('Your hook has been successfully removed.');
+		await stdout(MSG_DESTROY_HOOK);
 		break;
 	}
 	case 'sniff': {
@@ -47,22 +57,26 @@ switch (flag) {
 		const hookName = Deno.args[1];
 		await defaultHookNameCheck(hookName);
 		await switchHookState(hookName, true);
-		await stdout('Your hook has been successfully disabled.');
+		await stdout(MSG_SLEEP);
 		break;
 	}
 	case 'wake': {
 		const hookName = Deno.args[1];
 		await defaultHookNameCheck(hookName);
 		await switchHookState(hookName, false);
-		await stdout('Your hook has been successfully enabled.');
+		await stdout(MSG_WAKE);
 		break;
 	}
 	case 'bye': {
 		await uninstallFreddieHooks();
-		await stdout('Your Freddie hooks have been successfully uninstalled.');
+		await stdout(MSG_BYE);
+		break;
+	}
+	case 'help': {
+		await stdout(MSG_HELP);
 		break;
 	}
 	default:
-		await stderr('Unknown flag.');
+		await stderr(MSG_DEFAULT);
 		Deno.exit(1);
 }
