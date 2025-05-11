@@ -1,4 +1,4 @@
-import { stderr, stdout } from './src/helpers.ts';
+import { defaultHookNameCheck, stderr, stdout } from './src/helpers.ts';
 import {
 	createProxyHook,
 	destroyProxyHook,
@@ -20,24 +20,14 @@ switch (flag) {
 	}
 	case 'add': {
 		const hookName = Deno.args[1];
-
-		if (!hookName) {
-			await stderr('Please, provide a hook name.');
-			Deno.exit(1);
-		}
-
+		await defaultHookNameCheck(hookName);
 		await createProxyHook(hookName);
 		await stdout('Your hook has been successfully added.');
 		break;
 	}
 	case 'destroy': {
 		const hookName = Deno.args[1];
-
-		if (!hookName) {
-			await stderr('Please, provide a hook name.');
-			Deno.exit(1);
-		}
-
+		await defaultHookNameCheck(hookName);
 		await destroyProxyHook(hookName);
 		await stdout('Your hook has been successfully removed.');
 		break;
@@ -48,34 +38,19 @@ switch (flag) {
 	}
 	case 'fetch': {
 		const hookName = Deno.args[1];
-
-		if (!hookName) {
-			await stderr('Please, provide a hook name.');
-			Deno.exit(1);
-		}
-
+		await defaultHookNameCheck(hookName);
 		await showHookContent(hookName);
 		break;
 	}
 	case 'sleep': {
 		const hookName = Deno.args[1];
-
-		if (!hookName) {
-			await stderr('Please, provide a hook name.');
-			Deno.exit(1);
-		}
-
+		await defaultHookNameCheck(hookName);
 		await switchHookState(hookName, true);
 		break;
 	}
 	case 'wake': {
 		const hookName = Deno.args[1];
-
-		if (!hookName) {
-			await stderr('Please, provide a hook name.');
-			Deno.exit(1);
-		}
-
+		await defaultHookNameCheck(hookName);
 		await switchHookState(hookName, false);
 		break;
 	}

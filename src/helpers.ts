@@ -36,6 +36,15 @@ export const defaultExistentHookPrompt = async (): Promise<void> => {
 	}
 };
 
+export const defaultHookNameCheck = async (
+	hookName?: string,
+): Promise<void> => {
+	if (!hookName) {
+		await stderr('Please, provide a hook name.');
+		Deno.exit(1);
+	}
+};
+
 export const formatItalic = (content: string): string => {
 	return `\x1b[3m${content}\x1b[0m`;
 };
