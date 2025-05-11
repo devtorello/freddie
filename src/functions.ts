@@ -20,6 +20,7 @@ import {
 	createFile,
 	fileErrorsMessageMapper,
 	removeFile,
+	renameFile,
 	showFileContent,
 } from './file.ts';
 
@@ -186,4 +187,54 @@ export const showHookContent = async (hookName: string): Promise<void> => {
 	}).join('\n');
 
 	await stdout(formattedContent);
+};
+
+export const switchHookState = async (
+	hookName: string,
+	shouldDisable: boolean,
+): Promise<void> => {
+	if (!VALID_GIT_HOOKS.has(hookName)) {
+		await stderr('Invalid hook name. Try again, please.');
+		Deno.exit(1);
+	}
+
+	if (shouldDisable) {
+		const renameResult = await renameFile(
+			`${FREDDIE_FOLDER}/${hookName}`,
+			`${FREDDIE_FOLDER}/.${hookName}`,
+		);
+
+		if (isError(renameResult)) {
+			if (renameResult.error === 'FILE_DOES_NOT_EXIST') {
+				await stderr('Hook does not exist or it is already disabled.');
+				Deno.exit(1);
+			}
+
+			const error = fileErrorsMessageMapper(renameResult.error);
+			await stderr(error);
+			Deno.exit(1);
+		}
+
+		await stdout('Your hook has been disabled.');
+		return;
+	}
+
+	const renameResult = await renameFile(
+		`${FREDDIE_FOLDER}/.${hookName}`,
+		`${FREDDIE_FOLDER}/${hookName}`,
+	);
+
+	if (isError(renameResult)) {
+		if (renameResult.error === 'FILE_DOES_NOT_EXIST') {
+			await stderr('Hook does not exist or it is already enabled.');
+			Deno.exit(1);
+		}
+
+		const error = fileErrorsMessageMapper(renameResult.error);
+		await stderr(error);
+		Deno.exit(1);
+	}
+
+	await stdout('Your hook has been enabled.');
+	return;
 };

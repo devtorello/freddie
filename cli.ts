@@ -6,6 +6,7 @@ import {
 	ensureWelcomeSampleHook,
 	listHooks,
 	showHookContent,
+	switchHookState,
 } from './src/functions.ts';
 
 const [flag] = Deno.args;
@@ -54,6 +55,28 @@ switch (flag) {
 		}
 
 		await showHookContent(hookName);
+		break;
+	}
+	case 'sleep': {
+		const hookName = Deno.args[1];
+
+		if (!hookName) {
+			await stderr('Please, provide a hook name.');
+			Deno.exit(1);
+		}
+
+		await switchHookState(hookName, true);
+		break;
+	}
+	case 'wake': {
+		const hookName = Deno.args[1];
+
+		if (!hookName) {
+			await stderr('Please, provide a hook name.');
+			Deno.exit(1);
+		}
+
+		await switchHookState(hookName, false);
 		break;
 	}
 	default:

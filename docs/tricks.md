@@ -19,7 +19,7 @@ can do it by running `freddie welcome`.
   everything is working.
 - You’re free to replace or edit it — he won’t take it personally!
 
-## ⌛ Hook Management Commands
+## ✅ Hook Management Commands
 
 These commands let you add, remove, and manage hooks like a true pack leader.
 
@@ -45,12 +45,12 @@ These commands let you add, remove, and manage hooks like a true pack leader.
 - Command: `freddie fetch <hook-name>`
 - Displays the content of the specified hook script managed by Freddie.
 
-## ⌛ Enable/Disable Hooks
+## ✅ Enable/Disable Hooks
 
 Sometimes Freddie needs to rest. Sometimes he’s ready to go full fetch mode.
 These commands control his energy levels. ⚡
 
-### ⌛ Enable/Disable a Specific Hook
+### ✅ Enable/Disable a Specific Hook
 
 - Command: `freddie sleep <hook-name>`
 - Temporarily disables the specified hook without deleting it.
@@ -58,7 +58,7 @@ These commands control his energy levels. ⚡
 - Command: `freddie wake <hook-name>`
 - Temporarily enables the specified hook.
 
-### ⌛ Show Status of All Hooks
+### ✅ Show Status of All Hooks
 
 - Command: `freddie check`
 - Lists all hooks along with their current state: enabled or disabled.

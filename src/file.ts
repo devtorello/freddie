@@ -82,6 +82,21 @@ export const showFileContent = async (
 	}
 };
 
+export const renameFile = async (
+	oldPath: string,
+	newPath: string,
+): Promise<Result<boolean, 'FILE_DOES_NOT_EXIST' | 'UNEXPECTED_ERROR'>> => {
+	try {
+		await Deno.rename(oldPath, newPath);
+		return success(true);
+	} catch (e) {
+		if (e instanceof Deno.errors.NotFound) {
+			return failure('FILE_DOES_NOT_EXIST');
+		}
+		return failure('UNEXPECTED_ERROR');
+	}
+};
+
 export const fileErrorsMessageMapper = (error: FileErrors): string => {
 	switch (error) {
 		case 'FILE_ALREADY_EXISTS':
