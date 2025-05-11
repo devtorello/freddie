@@ -1,3 +1,4 @@
+import { stdout } from './helpers.ts';
 import { failure, Result, success } from './result.ts';
 
 type CreateFolderResult = Result<
@@ -38,5 +39,15 @@ export const removeFolder = async (
 		return success(true);
 	} catch {
 		return failure('UNEXPECTED_ERROR');
+	}
+};
+
+export const defaultExistentFolderPrompt = async () => {
+	const answer = prompt(
+		'Ops, it seems that the folder already exists. Do you want me to reset your folder? Give me the "yes" command in order to proceed:',
+	);
+	if (answer !== 'yes') {
+		await stdout('Aborting.');
+		Deno.exit(0);
 	}
 };

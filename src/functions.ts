@@ -1,5 +1,10 @@
 import { FREDDIE_FOLDER, GIT_FOLDER, VALID_GIT_HOOKS } from './consts.ts';
-import { createFolder, folderExists, removeFolder } from './folder.ts';
+import {
+	createFolder,
+	defaultExistentFolderPrompt,
+	folderExists,
+	removeFolder,
+} from './folder.ts';
 import { isError } from './result.ts';
 import {
 	defaultExistentHookPrompt,
@@ -18,13 +23,7 @@ export const ensureFreddieFolder = async (): Promise<void> => {
 			Deno.exit(1);
 		}
 
-		const answer = prompt(
-			'Ops, it seems that the folder already exists. Do you want me to reset your folder? Give me the "yes" command in order to proceed:',
-		);
-		if (answer !== 'yes') {
-			await stdout('Aborting.');
-			Deno.exit(0);
-		}
+		await defaultExistentFolderPrompt();
 
 		const removeResult = await removeFolder(FREDDIE_FOLDER);
 		if (isError(removeResult)) {

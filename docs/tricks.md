@@ -29,7 +29,7 @@ These commands let you add, remove, and manage hooks like a true pack leader.
 - Adds a new hook file in .freddie/ and sets up a proxy in .git/hooks/.
 - Warns if the hook already exists, and asks before overwriting.
 
-### ⌛ Remove a Hook
+### ✅ Remove a Hook
 
 - Command: `freddie destroy <hook-name>`
 - Removes the hook from .freddie/ and deletes its proxy from .git/hooks/.
