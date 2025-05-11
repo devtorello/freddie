@@ -101,10 +101,16 @@ export const renameFile = async (
 export const fileErrorsMessageMapper = (error: FileErrors): string => {
 	switch (error) {
 		case 'FILE_ALREADY_EXISTS':
-			return `🐶 ${formatItalic('*Tilts head*')} This file already exists. Maybe fetch a new name?`;
+			return `🐶 ${
+				formatItalic('*Tilts head*')
+			} This file already exists. Maybe fetch a new name?`;
 		case 'FILE_DOES_NOT_EXIST':
-			return `🐶 ${formatItalic('*Sniffs*')} I can't find that file anywhere. Did it run off?`;
+			return `🐶 ${
+				formatItalic('*Sniffs*')
+			} I can't find that file anywhere. Did it run off?`;
 		case 'UNEXPECTED_ERROR':
-			return `🐶 ${formatItalic('*Whimpers*')} Something unexpected happened. Can you throw the stick again?`;
+			return `🐶 ${
+				formatItalic('*Whimpers*')
+			} Something unexpected happened. Can you throw the stick again?`;
 	}
 };

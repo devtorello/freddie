@@ -11,13 +11,13 @@ import {
 } from './src/functions.ts';
 import {
 	MSG_ADD_HOOK,
-	MSG_DESTROY_HOOK,
-	MSG_SLEEP,
-	MSG_WELCOME,
-	MSG_DEFAULT,
 	MSG_BYE,
-	MSG_WAKE,
+	MSG_DEFAULT,
+	MSG_DESTROY_HOOK,
 	MSG_HELP,
+	MSG_SLEEP,
+	MSG_WAKE,
+	MSG_WELCOME,
 } from './src/message.ts';
 
 const [flag] = Deno.args;
