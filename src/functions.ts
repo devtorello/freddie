@@ -11,10 +11,17 @@ import {
 	defaultExistentHookPrompt,
 	defaultFreddieHookContent,
 	defaultGitHookContent,
+	formatItalic,
+	indent,
 	stderr,
 	stdout,
 } from './helpers.ts';
-import { createFile, fileErrorsMessageMapper, removeFile } from './file.ts';
+import {
+	createFile,
+	fileErrorsMessageMapper,
+	removeFile,
+	showFileContent,
+} from './file.ts';
 
 export const ensureFreddieFolder = async (): Promise<void> => {
 	const folderResult = await createFolder(FREDDIE_FOLDER);
@@ -155,4 +162,28 @@ export const listHooks = async () => {
 	}
 	await stdout('Your hooks:');
 	await stdout(hooks.map((hook) => `\t- ${hook}`).join('\n'));
+};
+
+export const showHookContent = async (hookName: string): Promise<void> => {
+	if (!VALID_GIT_HOOKS.has(hookName)) {
+		await stderr('Invalid hook name. Try again, please.');
+		Deno.exit(1);
+	}
+
+	const hookContent = await showFileContent(`${FREDDIE_FOLDER}/${hookName}`);
+	if (isError(hookContent)) {
+		const error = fileErrorsMessageMapper(hookContent.error);
+		await stderr(error);
+		Deno.exit(1);
+	}
+
+	await stdout('Here is your hook content:');
+
+	const splitContent = hookContent.value.split('\n');
+	const formattedContent = splitContent.map((line) => {
+		const italicLine = formatItalic(line);
+		return indent(italicLine);
+	}).join('\n');
+
+	await stdout(formattedContent);
 };

@@ -68,6 +68,20 @@ export const removeFile = async (
 	}
 };
 
+export const showFileContent = async (
+	path: string,
+): Promise<Result<string, 'FILE_DOES_NOT_EXIST' | 'UNEXPECTED_ERROR'>> => {
+	try {
+		const content = await Deno.readTextFile(path);
+		return success(content);
+	} catch (e) {
+		if (e instanceof Deno.errors.NotFound) {
+			return failure('FILE_DOES_NOT_EXIST');
+		}
+		return failure('UNEXPECTED_ERROR');
+	}
+};
+
 export const fileErrorsMessageMapper = (error: FileErrors): string => {
 	switch (error) {
 		case 'FILE_ALREADY_EXISTS':

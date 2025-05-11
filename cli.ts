@@ -5,6 +5,7 @@ import {
 	ensureFreddieFolder,
 	ensureWelcomeSampleHook,
 	listHooks,
+	showHookContent,
 } from './src/functions.ts';
 
 const [flag] = Deno.args;
@@ -42,6 +43,17 @@ switch (flag) {
 	}
 	case 'sniff': {
 		await listHooks();
+		break;
+	}
+	case 'fetch': {
+		const hookName = Deno.args[1];
+
+		if (!hookName) {
+			await stderr('Please, provide a hook name.');
+			Deno.exit(1);
+		}
+
+		await showHookContent(hookName);
 		break;
 	}
 	default:

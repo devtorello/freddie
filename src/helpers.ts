@@ -1,3 +1,11 @@
+export const stdout = async (text: string, end = '\n'): Promise<number> => {
+	return await Deno.stdout.write(new TextEncoder().encode(`${text}${end}`));
+};
+
+export const stderr = async (text: string, end = '\n'): Promise<number> => {
+	return await Deno.stderr.write(new TextEncoder().encode(`${text}${end}`));
+};
+
 export const defaultFreddieHookContent = (hookName: string): string => {
 	return `#!/usr/bin/env bash
 
@@ -28,10 +36,8 @@ export const defaultExistentHookPrompt = async (): Promise<void> => {
 	}
 };
 
-export const stdout = async (text: string, end = '\n'): Promise<number> => {
-	return await Deno.stdout.write(new TextEncoder().encode(`${text}${end}`));
+export const formatItalic = (content: string): string => {
+	return `\x1b[3m${content}\x1b[0m`;
 };
 
-export const stderr = async (text: string, end = '\n'): Promise<number> => {
-	return await Deno.stderr.write(new TextEncoder().encode(`${text}${end}`));
-};
+export const indent = (content: string): string => `\t${content}`;

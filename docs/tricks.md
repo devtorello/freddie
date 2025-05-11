@@ -40,7 +40,7 @@ These commands let you add, remove, and manage hooks like a true pack leader.
 - Command: `freddie sniff`
 - Shows all hooks Freddie is currently managing.
 
-### ⌛ Show Script(s) for a Hook
+### ✅ Show Script(s) for a Hook
 
 - Command: `freddie fetch <hook-name>`
 - Displays the content of the specified hook script managed by Freddie.
