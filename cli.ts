@@ -1,5 +1,6 @@
 import { stderr, stdout } from './src/helpers.ts';
 import {
+	createProxyHook,
 	ensureFreddieFolder,
 	ensureWelcomeSampleHook,
 } from './src/functions.ts';
@@ -11,6 +12,18 @@ switch (flag) {
 		await ensureFreddieFolder();
 		await ensureWelcomeSampleHook();
 		await stdout('Your hooks have been successfully initialized.');
+		break;
+	}
+	case 'add': {
+		const hookName = Deno.args[1];
+
+		if (!hookName) {
+			await stderr('Please, provide a hook name.');
+			Deno.exit(1);
+		}
+
+		await createProxyHook(hookName);
+		await stdout('Your hook has been successfully added.');
 		break;
 	}
 	default:

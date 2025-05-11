@@ -1,12 +1,13 @@
-import {
-	DEFAULT_PRE_COMMIT_CONTENT,
-	FREDDIE_FOLDER,
-	GIT_FOLDER,
-	PROXY_HOOK_CONTENT,
-} from './consts.ts';
-import { createFolder, removeFolder } from './folder.ts';
+import { FREDDIE_FOLDER, GIT_FOLDER, VALID_GIT_HOOKS } from './consts.ts';
+import { createFolder, folderExists, removeFolder } from './folder.ts';
 import { isError } from './result.ts';
-import { stderr, stdout } from './helpers.ts';
+import {
+	defaultExistentHookPrompt,
+	defaultFreddieHookContent,
+	defaultGitHookContent,
+	stderr,
+	stdout,
+} from './helpers.ts';
 import { createFile } from './file.ts';
 
 export const ensureFreddieFolder = async (): Promise<void> => {
@@ -42,7 +43,7 @@ export const ensureWelcomeSampleHook = async (
 ): Promise<void> => {
 	const freddieHookCreation = await createFile(
 		`${FREDDIE_FOLDER}/pre-commit`,
-		DEFAULT_PRE_COMMIT_CONTENT,
+		defaultFreddieHookContent('pre-commit'),
 		{ overwrite },
 	);
 
@@ -52,20 +53,59 @@ export const ensureWelcomeSampleHook = async (
 			Deno.exit(1);
 		}
 
-		const answer = prompt(
-			'Ops, it seems that the freddie hook file already exists. Do I have permission to overwrite it? Give me the "yes" command in order to proceed:',
-		);
-		if (answer !== 'yes') {
-			await stdout('Aborting.');
-			Deno.exit(0);
-		}
-
+		await defaultExistentHookPrompt();
 		await ensureWelcomeSampleHook(true);
 	}
 
 	const gitHookCreation = await createFile(
 		`${GIT_FOLDER}/pre-commit`,
-		PROXY_HOOK_CONTENT['pre-commit'],
+		defaultGitHookContent('pre-commit'),
+		{ overwrite },
+	);
+
+	if (isError(gitHookCreation)) {
+		if (gitHookCreation.error === 'UNEXPECTED_ERROR') {
+			await stderr('Failed to create git hook file.');
+			Deno.exit(1);
+		}
+	}
+};
+
+export const createProxyHook = async (
+	hookName: string,
+	overwrite = false,
+): Promise<void> => {
+	if (!await folderExists(FREDDIE_FOLDER)) {
+		await stderr(
+			'Freddie folder does not exist. Please, run "freddie welcome" first!',
+		);
+		Deno.exit(1);
+	}
+
+	if (!VALID_GIT_HOOKS.has(hookName)) {
+		await stderr('Invalid hook name. Try again, please.');
+		Deno.exit(1);
+	}
+
+	const freddieHookCreation = await createFile(
+		`${FREDDIE_FOLDER}/${hookName}`,
+		defaultFreddieHookContent(hookName),
+		{ overwrite },
+	);
+
+	if (isError(freddieHookCreation)) {
+		if (freddieHookCreation.error === 'UNEXPECTED_ERROR') {
+			await stderr('Failed to create freddie hook file.');
+			Deno.exit(1);
+		}
+
+		await defaultExistentHookPrompt();
+		await createProxyHook(hookName, true);
+	}
+
+	const gitHookCreation = await createFile(
+		`${GIT_FOLDER}/${hookName}`,
+		defaultGitHookContent(hookName),
 		{ overwrite },
 	);
 

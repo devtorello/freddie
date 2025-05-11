@@ -5,6 +5,17 @@ type CreateFolderResult = Result<
 	'FOLDER_ALREADY_EXISTS' | 'UNEXPECTED_ERROR'
 >;
 
+export const folderExists = async (
+	path: string,
+): Promise<boolean> => {
+	try {
+		await Deno.stat(path);
+		return true;
+	} catch {
+		return false;
+	}
+};
+
 export const createFolder = async (
 	path: string,
 ): Promise<CreateFolderResult> => {
